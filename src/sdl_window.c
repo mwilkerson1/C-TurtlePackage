@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
     SDL_Window* window = NULL;
-    SDL_SysWMinfo info;
+    //SDL_SysWMinfo info;
     SDL_Surface* screenSurface = NULL;
 
     // Initialize SDL
@@ -14,13 +14,18 @@ int main(int argc, char *argv[]) {
     }
 
     // Create a hidden SDL window
-    window = SDL_CreateWindow("Wayland Test Window",
-                              SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED,
-                              640, 480,
-                              SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(
+            "Wayland Test Window", 
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+            640, 480,
+            SDL_WINDOW_SHOWN
+            );
+
     if (window == NULL) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+        printf(
+            "SDL_CreateWindow Error: %s\n", SDL_GetError()
+                );
         SDL_Quit();
         return 1;
     }
@@ -34,7 +39,7 @@ int main(int argc, char *argv[]) {
                 screenSurface, 
                 NULL, 
                 SDL_MapRGB(
-                    screenSurface->format, 0xFF, 0xFF, 0xFF
+                    screenSurface->format, 0x00, 0x00, 0x00
                     ));
             
         //Update the surface
