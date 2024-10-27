@@ -4,12 +4,18 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
-// Typedef enum [bool] and struct [Sprite]
+// struct [Sprite]
+
+typedef enum {
+    TURN_LEFT = 0,
+    TURN_RIGHT = 1
+} TurnDirection;
 
 typedef struct {
     int x;
     int y;
     int angle;
+    TurnDirection turn;
     bool pen;
 } Sprite;
 
@@ -18,6 +24,8 @@ typedef struct {
 // Defined in main
 
 extern SDL_Renderer* renderer;
+extern SDL_Surface* winSurface;
 extern SDL_Window* window;
+extern Sprite sprite;
 
 #endif // GLOBAL_VARS_H

@@ -4,6 +4,25 @@
 /*****PROJECT HEADERS*****/
 #include "events_handler.h"
 #include "global_vars.h"
+#include "sprite_logic.h"
+#include "load_sprite.h"
+
+#ifdef TEST_HANDLER
+SDL_Window*   window;
+SDL_Renderer* renderer;
+SDL_Texture*  imageTexture;
+SDL_Rect      destRect;
+Sprite        sprite;
+
+
+// Set sprite start position and orientation
+#define X_START   400
+#define Y_START   400
+#define PEN_START false
+#define IMG       "/home/mateo/Projects/C_TurtlePackage/Images/blackbuck.bmp"
+#define IMG_W     50
+#define IMG_H     50 
+#endif
 
 bool event_loop() {
 /* Main event loop that will handle keyboard events
@@ -13,14 +32,9 @@ bool event_loop() {
  *      - up key [ advance x num of pixels fwd ]
  *      - pen down
  *      - pen up
- * TODO:
- *      - implement funct to rotate sprite right
- *      - implement funct to rotate sprite left
- *      - implement funct to advance sprite x pixels fwd
- *      - implement funct to draw line as sprite advances
- *          [ pen down ]
- *      - implement funct to stop draw line as sprite advances
- *          [ pen up ]
+ * It calls functions from sprite_logic.h that will
+ * update the sprite structure's members based on 
+ * keyboard events.
  */
     SDL_Event evt;
     
@@ -32,18 +46,28 @@ bool event_loop() {
                 switch ( evt.key.keysym.sym ) {
                     case SDLK_RIGHT:
                         printf( "ROTATE 45 DEGREES RIGHT\n" );
+                        update_orientation( TURN_RIGHT );
+                        printf( "angle: %d\n", sprite.angle );
                         break;
                     case SDLK_LEFT:
                         printf( "ROTATE 45 DEGREES LEFT\n" );
+                        update_orientation( TURN_LEFT );
+                        printf( "angle: %d\n", sprite.angle );
                         break;
                     case SDLK_UP:
                         printf( "ADVANCE FORWARD\n" );
+                        update_location( );
+                        printf( "loc: ( %d, %d )\n", sprite.x, sprite.y );
                         break;
                     case SDLK_d:
                         printf( "PEN DOWN\n" );
+                        update_pen( true );
+                        printf( "pen: %d\n", sprite.pen );
                         break;
                     case SDLK_u:
                         printf( "PEN UP\n" );
+                        update_pen( false );
+                        printf( "pen: %d\n", sprite.pen );
                         break;
                     case SDLK_ESCAPE:
                         return false;
@@ -55,30 +79,32 @@ bool event_loop() {
     
     SDL_SetRenderDrawColor(
             renderer,
+            100,
             255,
-            255,
-            255,
+            50,
             255
             );
     SDL_RenderClear( renderer );
 
-/*  Uncommit once sprit logic added and rdy to test
- *  Make it it's own function
- *  
- *  SDL_SetRenderDrawColor(
- *      renderer,
- *      0,
- *      0,
- *      0,
- *      255
- *      );
- *  SDL_Rect sprite_rect = {
- *      sprite.x,
- *      sprite.y,
- *      50,  // Example sprite size
- *      50
- *      };
- */
+    destRect.x = sprite.x;
+    destRect.y = sprite.y;
+    destRect.w = IMG_W;
+    destRect.h = IMG_H;
+
+    SDL_Point center = {
+        destRect.w / 2,
+        destRect.h / 2
+    };
+
+    SDL_RenderCopyEx(
+            renderer,
+            imageTexture,
+            NULL,
+            &destRect,
+            sprite.angle,
+            &center,
+            SDL_FLIP_HORIZONTAL
+            );
 
     SDL_RenderPresent( renderer );    
 
@@ -87,12 +113,7 @@ bool event_loop() {
 
 /********************************************************************/
 // EVENT LOOP TEST CODE
-SDL_Window* window;
-SDL_Renderer* renderer;
-
 #ifdef TEST_HANDLER
-SDL_Window* window;
-
 bool init() {
     
     if ( SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_EVENTS ) > 0 ) {
@@ -128,6 +149,8 @@ bool window_test_handler() {
         printf( "Error creating renderer: %s", SDL_GetError() );
         return false;
     }
+
+    if ( !load_sprite( IMG ) ) return false; 
     
     // Start event loop
     while ( event_loop() ) {
@@ -138,14 +161,18 @@ bool window_test_handler() {
 }
 
 void kill() {
-    
+    SDL_DestroyTexture( imageTexture );
     SDL_DestroyRenderer( renderer );
     SDL_DestroyWindow( window );
     SDL_Quit();
 }
 
 int main( int argc, char* argv[] ) {   
-   
+
+    sprite.x = X_START;
+    sprite.y = Y_START;
+    sprite.pen = PEN_START;
+
     if ( !init() ) return 1;
     if ( !window_test_handler() ) return 1;
     
