@@ -1,19 +1,29 @@
+# Compiler and flags
 CC = gcc
 CFLAGS = -I./include -Wall -O2
-LDFLAGS = $(shell sdl2-config --libs) -lGL -ldl -lm
+LDFLAGS = -lSDL2 -lGL -lGLU -ldl -lm
 
-SRC = ./src/mega.c
-OBJ = $(SRC:.c=.o)
-TARGET = ./Binaries/turtle 
+# Directories
+SRC_DIR = src
+BIN_DIR = Binaries
 
-all: $(TARGET)
+# Source and output files
+SRC = $(SRC_DIR)/mega.c
+OBJ = $(SRC_DIR)/mega.o
+OUT = $(BIN_DIR)/turtle
 
-$(TARGET): $(OBJ)
-	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
+# Targets
+all: $(OUT)
 
-./src/%.o: ./src/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OUT): $(OBJ)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $(OBJ) -o $(OUT) $(LDFLAGS)
+
+$(OBJ): $(SRC)
+	@mkdir -p $(SRC_DIR)
+	$(CC) $(CFLAGS) -c $(SRC) -o $(OBJ)
 
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(OBJ) $(OUT)
 
+.PHONY: all clean
