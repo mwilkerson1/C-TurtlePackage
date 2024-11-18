@@ -211,7 +211,7 @@ bool window_test_handler() {
  */
     // Create SDL window with OpenGL support
     window = SDL_CreateWindow(
-        "Interactive Turtle Graphics",
+        "C-TurtlePackage: Interactive Turtle Graphics",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         800,
@@ -290,7 +290,7 @@ bool event_loop() {
                         previous_y = sprite.y;
                         update_location();
                         if (sprite.pen) {
-                            draw_line(previous_x, previous_y, sprite.x, sprite.y);
+                            draw_line(previous_x, previous_y - 50, sprite.x, sprite.y - 50);
                         }
                         break;
                     case SDLK_d:
