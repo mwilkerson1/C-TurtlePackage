@@ -34,7 +34,7 @@ This project utilizes SDL2 for window management and event handling, and OpenGL 
 - Custom Sprite: Use a personalized image as the turtle sprite, enhancing the visual appeal.
 
 ## Demo
-[insert gif]
+![Demo of Turtle Graphics](Images/demo.gif)
 
 ## Installation
 ### Prerequisites
